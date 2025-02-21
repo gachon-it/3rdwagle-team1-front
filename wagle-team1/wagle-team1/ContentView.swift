@@ -9,16 +9,15 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var showMainView = false
-    @State private var isLoggedIn: Bool = false
+    @AppStorage("isLoggedIn") var isLoggedIn: Bool = false
     @State private var selectedTab = 0
     
     
     var body: some View {
         
-        ZStack {
+        VStack {
             if showMainView {
-                // 메인 콘텐츠나 이후의 뷰들을 여기에 작성합니다.
-                NavigationStack{
+//                NavigationStack{
                     if isLoggedIn {
                         Group {
                             switch selectedTab {
@@ -32,7 +31,7 @@ struct ContentView: View {
                                 }
                             case 2:
                                 NavigationStack {
-                                    ProfileView()  // 설정 화면
+                                    ProfileView(isLoggedIn: $isLoggedIn)  // 설정 화면
                                 }
                             default:
                                 NavigationStack {
@@ -47,7 +46,7 @@ struct ContentView: View {
                     } else {
                         SignInView(isLoggedIn: $isLoggedIn)
                     }
-                }
+//                }
                 
             } else {
                 SplashView()
@@ -60,6 +59,13 @@ struct ContentView: View {
                     }
             }
         }
+                .onChange(of: isLoggedIn) { newValue in
+                            if newValue == false {
+                                // 로그아웃 될 때 selectedTab을 0으로 초기화
+                                selectedTab = 0
+                            }
+                        }
+        
     }
 }
 

@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct ProfileView: View {
+    @Binding var isLoggedIn: Bool
+
     var body: some View {
         VStack{
             
@@ -18,9 +20,23 @@ struct ProfileView: View {
             Text("nickName")
                 .foregroundStyle(Color.softGreen)
                 .padding(.top, 50)
+            
             Spacer()
             Spacer()
-
+            
+            HStack{
+                Button(action: {
+                    isLoggedIn = false
+                }) {
+                    Text("로그아웃")
+                        .font(.system(size: 16, weight: .medium))
+                        .foregroundColor(.gray)
+                        .padding()
+                }
+                .padding(.leading, 43)
+                
+                Spacer()
+            }
         }
     }
 }

@@ -29,10 +29,36 @@ class YourlViewModel: ObservableObject {
     }
     
     // 폴더/링크 생성/수정 로직도 여기서 처리
-    func createFolder(name: String) {
-        // TODO: 폴더 생성 API 호출
+    func createFolder(name: String, completion: @escaping (Bool) -> Void) {
+        // 폴더 생성 API 호출
+        // 예시:
+        guard let url = URL(string: "https://8da8-2001-2d8-2017-5945-8cff-476a-bd11-141.ngrok-free.app/api/v1/folder/create") else {
+            completion(false)
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let body = ["folderName": name]
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: body, options: [])
+        } catch {
+            completion(false)
+            return
+        }
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            // 간단히 처리
+            if let _ = error {
+                completion(false)
+                return
+            }
+            // 성공 시 true, 실패 시 false
+            completion(true)
+        }.resume()
     }
-    
     func createLink(title: String, url: String, memo: String) {
         // TODO: 링크 생성 API 호출
     }

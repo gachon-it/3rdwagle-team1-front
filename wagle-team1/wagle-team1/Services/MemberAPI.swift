@@ -41,7 +41,7 @@ enum APIEndpoint {
 final class MemberAPI {
     
     func login(name: String, completion: @escaping (Result<LoginResponse, Error>) -> Void) {
-        guard let url = APIEndpoint.login.url else {
+        guard let url = URL(string:"https://8da8-2001-2d8-2017-5945-8cff-476a-bd11-141.ngrok-free.app/api/v1/members/login") else {
             completion(.failure(URLError(.badURL)))
             return
         }
@@ -85,7 +85,7 @@ final class MemberAPI {
     }
     
     func signup(name: String, completion: @escaping (Result<SignupResponse, Error>) -> Void) {
-        guard let url = APIEndpoint.signup.url else {
+        guard let url = URL(string:"https://8da8-2001-2d8-2017-5945-8cff-476a-bd11-141.ngrok-free.app/api/v1/members/signup") else {
             completion(.failure(URLError(.badURL)))
             return
         }

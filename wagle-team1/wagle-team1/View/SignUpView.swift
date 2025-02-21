@@ -35,7 +35,7 @@ struct SignUpView: View {
                 TextField("닉네임을 입력해주세요", text: $nickname)
                     .padding()
                     .background(RoundedRectangle(cornerRadius: 8)
-                        .stroke(nicknameError == nil ? Color.softGreen : Color.red, lineWidth: 1))
+                    .stroke(nicknameError == nil ? Color.softGreen : Color.red, lineWidth: 1))
                     .foregroundColor(nicknameError == nil ? Color.softGreen : Color.red)
 
                 if let error = nicknameError {
