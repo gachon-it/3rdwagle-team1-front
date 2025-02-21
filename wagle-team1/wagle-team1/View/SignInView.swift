@@ -15,6 +15,9 @@ struct SignInView: View {
     
     @StateObject private var memberViewModel = MemberViewModel()
     @State private var isNavigatingToContent: Bool = false
+    @AppStorage("userId") var userId: Int = 0  // userId 저장
+
+    
     
     
     var body: some View {
@@ -40,7 +43,9 @@ struct SignInView: View {
                     Text("계정이 없으신가요?")
                         .font(.system(size: 16, weight: .medium))
                         .foregroundColor(.gray)
-                        .frame(maxWidth: .infinity)
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                        .contentShape(Rectangle())
+
                 }
                 .padding(.leading, 220)
                 .padding(.top, 10)
@@ -80,6 +85,9 @@ struct SignInView: View {
                 print("로그인 응답: \(response)")
                 if response.code == 200 {
                     isLoggedIn = true
+                    if let id = response.result?.userId {
+                                            userId = id
+                                        }
                     isNavigatingToContent = true
                 } else {
                     print("로그인 실패: \(response.message)")

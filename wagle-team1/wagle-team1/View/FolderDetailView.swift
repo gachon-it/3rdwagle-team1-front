@@ -7,51 +7,35 @@
 import SwiftUI
 
 struct FolderDetailView: View {
-    let folder: YourlItem
+    let folder: FolderItem  // FolderItem: id(Int)와 name(String) 정도의 프로퍼티가 있다고 가정
     @StateObject private var viewModel = YourlViewModel()
     
     var body: some View {
         VStack {
-            // 상단 커스텀 or .navigationTitle
-            Text(folder.title)
+            Text(folder.name)
                 .font(.title2)
                 .bold()
                 .padding(.top, 8)
             
-            List(viewModel.folderContents[folder.id] ?? []) { item in
-                HStack {
-                    Image(systemName: item.type == .folder ? "folder.fill" : "link")
-                        .foregroundColor(.brown)
-                    
-                    VStack(alignment: .leading) {
-                        Text(item.title)
-                            .font(.headline)
-                        Text(item.dateString)
-                            .font(.caption)
-                            .foregroundColor(.gray)
-                    }
-                    Spacer()
-                    
-                    if item.isStarred {
-                        Image(systemName: "star.fill")
-                            .foregroundColor(.yellow)
-                    }
-                    
-                    if item.type == .folder {
-                        Image(systemName: "chevron.right")
-                            .foregroundColor(.gray)
-                    }
+            List(viewModel.folderArticles) { article in
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(article.name ?? "제목 없음")
+                        .font(.headline)
+                    Text(article.url)
+                        .font(.subheadline)
+                        .foregroundColor(.blue)
+                    Text(article.description)
+                        .font(.caption)
+                        .foregroundColor(.gray)
                 }
-                .contentShape(Rectangle())
-                .onTapGesture {
-                    // 하위 폴더면 또 FolderDetailView로 이동
-                    // 링크면 LinkDetailView로 이동
-                }
+                .padding(.vertical, 8)
             }
             .listStyle(.plain)
         }
+        .navigationTitle("폴더 상세")
         .onAppear {
-            viewModel.fetchFolderContents(folderId: folder.id)
+            // folder.id가 Int 타입이라고 가정
+            viewModel.fetchFolderArticles(folderId: folder.id)
         }
     }
 }

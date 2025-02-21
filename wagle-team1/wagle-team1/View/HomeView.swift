@@ -14,12 +14,22 @@ struct HomeView: View {
     @State private var showNewItemSheet = false
     @State private var showFolderCreationModal = false
     @State private var showFolderCreationPopup = false
-    
+    @State private var showLinkCreation = false
+    @State private var navigateToFolderDetail = false
+    @State private var selectedFolder: YourlItem? = nil
+
+    @AppStorage("userId") var userId: Int = 0
+
+    let formatter = DateFormatter()
+
     
     
     var body: some View {
+        
         NavigationStack {
+            
             ZStack {
+                
                 
                 VStack {
                     // 상단 커스텀 바
@@ -63,19 +73,20 @@ struct HomeView: View {
                         Spacer()
                     }
                     // 메인 리스트
-                    List(viewModel.items) { item in
+                    List(viewModel.folderContents) { item in
                         HStack {
                             // 폴더 or 링크 아이콘
-                            Image(item.type == .folder ? "folder" : "link")
+                            Image("folder")
                                 .foregroundColor(.softGreen)
                             
                             
                             VStack(alignment: .leading) {
-                                Text(item.title)
+                                Text(String(item.id))
+
+                                Text(item.name)
                                     .font(.system(size: 14))
                                     .foregroundStyle(Color.softGreen)
-                                Text(item.dateString)
-                                    .font(.caption)
+                                Text(formatter.string(from: item.date))                                    .font(.caption)
                                     .foregroundColor(.gray)
                             }
                             Spacer()
@@ -83,10 +94,10 @@ struct HomeView: View {
                             Image(systemName: "chevron.down")
                                 .foregroundColor(.gray)
                             // 별표
-                            if item.isStarred {
+//                            if item.isStarred {
                                 Image(systemName: "star.fill")
                                     .foregroundColor(.yellow)
-                            }
+//                            }
                             
                             
                         }
@@ -94,15 +105,18 @@ struct HomeView: View {
                         .onTapGesture {
                             // 폴더면 FolderDetailView로 이동
                             // 링크면 LinkDetailView로 이동
-                            if item.type == .folder {
+//                            if item.type == .folder {
                                 // folderId를 넘겨줘야 할 수도 있음
-                                navigateToFolderDetail(item: item)
+//                                selectedFolder = item
+                                navigateToFolderDetail = true
+                                //                                navigateToFolderDetail(item: item)
                                 print("folder click")
-                            } else {
-                                navigateToLinkDetail(item: item)
-                                print("Link click")
-                                
-                            }
+                            
+//                            } else {
+//                                navigateToLinkDetail(item: item)
+//                                print("Link click")
+//                                
+//                            }
                         }
                     }
                     .listStyle(.plain)
@@ -110,7 +124,8 @@ struct HomeView: View {
                 .navigationBarHidden(true) // 기본 네비게이션 바 숨김
                 // 화면이 나타날 때 API 호출
                 .onAppear {
-                    viewModel.fetchItems()
+                    viewModel.fetchFolderContents(folderId: userId)
+//                    viewModel.fetchItems()
                 }
                 // 바텀시트
                 .sheet(isPresented: $showNewItemSheet) {
@@ -128,6 +143,10 @@ struct HomeView: View {
                             }
                         } else if selection == .link {
                             // 링크 생성 화면으로 이동
+                            showNewItemSheet = false
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                    showLinkCreation = true
+                                }
                         }
                     }
                     //                .presentationDetents([.height(250)])
@@ -175,6 +194,12 @@ struct HomeView: View {
                 }
                 
             }
+            .sheet(isPresented: $showLinkCreation) {
+                NavigationStack {
+                    LinkCreationView(viewModel: viewModel)
+                }
+            }
+            
         }
     }
     

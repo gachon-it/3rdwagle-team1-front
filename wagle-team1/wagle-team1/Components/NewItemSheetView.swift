@@ -16,13 +16,13 @@ struct NewItemSheetView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
-            Text("새로만들기")
+            Text("새로 만들기")
                 .font(.headline)
                 .font(.system(size: 20))
                 .padding(.top, 20)
                 .padding(.leading, 16)
                     
-            Button("폴더만들기") {
+            Button("폴더 만들기") {
                 onSelect(.folder)
             }
             .foregroundColor(.black)

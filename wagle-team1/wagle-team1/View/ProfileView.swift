@@ -17,7 +17,7 @@ struct ProfileView: View {
             
             Image("person")
             
-            Text("nickName")
+            Text("테스트")
                 .foregroundStyle(Color.softGreen)
                 .padding(.top, 50)
             

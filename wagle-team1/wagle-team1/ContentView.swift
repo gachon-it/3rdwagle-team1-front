@@ -44,7 +44,9 @@ struct ContentView: View {
                         // 커스텀 탭바를 하단에 배치
                         CustomTabBar(selectedTab: $selectedTab)
                     } else {
-                        SignInView(isLoggedIn: $isLoggedIn)
+                        NavigationStack{
+                            SignInView(isLoggedIn: $isLoggedIn)
+                        }
                     }
 //                }
                 
