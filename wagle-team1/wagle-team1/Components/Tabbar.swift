@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct CustomTabBar: View {
-    @State private var selectedTab = 0
-    
+    @Binding var selectedTab: Int  // 외부 상태 바인딩
+
     let icons = [
         "home", "search", "setting"
     ]
@@ -22,6 +22,7 @@ struct CustomTabBar: View {
                     selectedTab = index
                 }) {
                     Image(icons[index])
+                        .renderingMode(.template)
                         .font(.system(size: 24))
                         .foregroundColor(selectedTab == index ? Color.softGreen : Color.gray)
                 }

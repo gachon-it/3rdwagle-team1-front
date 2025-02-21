@@ -13,6 +13,10 @@ struct SignInView: View {
     @State private var nickname: String = ""
     @Binding var isLoggedIn: Bool
     
+    @StateObject private var memberViewModel = MemberViewModel()
+    @State private var isNavigatingToContent: Bool = false
+    
+    
     var body: some View {
         VStack(spacing: 40) {
             Spacer()
@@ -49,9 +53,10 @@ struct SignInView: View {
             
             Spacer()
             
-            NavigationLink(destination: HomeView()
-                .overlay(CustomTabBar(), alignment: .bottom)
-) {
+            Button(action: {
+                print("로그인 시도: 닉네임 - \(nickname)")
+                memberViewModel.login(name: nickname)
+            }) {
                 Text("로그인")
                     .font(.system(size: 16, weight: .medium))
                     .foregroundColor(.white)
@@ -62,9 +67,31 @@ struct SignInView: View {
             }
             .padding(.horizontal, 24)
             .padding(.bottom, 40)
+            // API 호출 성공 시 ContentView로 네비게이션
+            NavigationLink(destination: ContentView(), isActive: $isNavigatingToContent) {
+                EmptyView()
+            }
         }
         .navigationBarHidden(true) // 기본 네비게이션 바 숨김
         .background(Color.white.ignoresSafeArea())
+        // 로그인 응답 변경 시 처리
+        .onChange(of: memberViewModel.loginResponse) { newResponse in
+            if let response = newResponse {
+                print("로그인 응답: \(response)")
+                if response.code == 200 {
+                    isLoggedIn = true
+                    isNavigatingToContent = true
+                } else {
+                    print("로그인 실패: \(response.message)")
+                }
+            }
+        }
+        // 에러 메시지 변경 시 디버깅 로그 출력
+        .onChange(of: memberViewModel.errorMessage) { error in
+            if let error = error {
+                print("MemberViewModel 에러: \(error)")
+            }
+        }
     }
 }
 
